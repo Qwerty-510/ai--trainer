@@ -1,0 +1,905 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexus AI · training studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #090b10;
+      font-family: 'Inter', sans-serif;
+      color: #e8edf5;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* subtle animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 20% 10%, rgba(0, 100, 255, 0.06) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 80%, rgba(150, 0, 255, 0.05) 0%, transparent 45%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .app {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 24px 32px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+    }
+
+    /* ========== HEADER ========== */
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(70, 130, 255, 0.12);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-icon {
+      background: linear-gradient(145deg, #0055ff, #00aaff);
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #fff;
+      box-shadow: 0 8px 18px -6px #0066ff80;
+    }
+
+    .brand-name {
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, #ffffff, #b0d0ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .brand-name span {
+      font-weight: 300;
+      font-size: 15px;
+      color: #6b82a0;
+      margin-left: 4px;
+      background: none;
+      -webkit-text-fill-color: #6b82a0;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .live-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 210, 160, 0.08);
+      border: 1px solid rgba(0, 255, 170, 0.22);
+      border-radius: 100px;
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      color: #7ae6c0;
+    }
+
+    .live-pill i {
+      font-size: 8px;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #161d27;
+      padding: 6px 14px 6px 10px;
+      border-radius: 100px;
+      border: 1px solid #253241;
+      font-size: 13px;
+      font-weight: 500;
+      color: #cfdefa;
+    }
+
+    .user-chip i {
+      font-size: 16px;
+      color: #8bb4e8;
+      background: #1f2d40;
+      padding: 4px;
+      border-radius: 50%;
+    }
+
+    /* ========== MAIN DASHBOARD GRID ========== */
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1.05fr 1.8fr 1.05fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    /* card base */
+    .panel {
+      background: #10161f;
+      border-radius: 26px;
+      border: 1px solid #1f2a37;
+      box-shadow: 0 16px 32px -16px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(70, 140, 255, 0.06) inset;
+      padding: 22px 22px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .panel:hover {
+      border-color: #2e405b;
+      box-shadow: 0 16px 32px -12px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(70, 140, 255, 0.1) inset;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-header h3 {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #98aec9;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-header h3 i {
+      font-size: 14px;
+      color: #4f8eff;
+    }
+
+    .pill {
+      background: #1b283a;
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #84c9ff;
+      letter-spacing: 0.2px;
+      border: 1px solid #2d486b;
+    }
+
+    .pill.green {
+      background: rgba(0, 210, 130, 0.1);
+      color: #7ae6c0;
+      border-color: rgba(0, 255, 170, 0.2);
+    }
+
+    /* ========== MODEL LIST ========== */
+    .model-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .model-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 14px;
+      background: #0d131c;
+      border-radius: 16px;
+      border: 1px solid #1f2a37;
+      transition: 0.15s;
+      cursor: pointer;
+    }
+
+    .model-card:hover {
+      background: #111a26;
+      border-color: #2a3b51;
+    }
+
+    .model-card.active {
+      background: #172234;
+      border-left: 3px solid #3d8eff;
+      box-shadow: 0 0 16px #0066ff18;
+    }
+
+    .model-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .model-avatar {
+      width: 36px;
+      height: 36px;
+      background: #1c2a3c;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: #6aa2ff;
+    }
+
+    .model-text h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e0ebff;
+      letter-spacing: -0.2px;
+    }
+
+    .model-text p {
+      font-size: 11px;
+      color: #7d92ad;
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    .model-metrics {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .acc {
+      font-size: 12px;
+      font-weight: 700;
+      color: #66e6b0;
+    }
+
+    .loss {
+      font-size: 10px;
+      color: #b57c8e;
+      font-weight: 500;
+    }
+
+    .add-model {
+      margin-top: 4px;
+      border: 1px dashed #2e405b;
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #7299cc;
+      font-weight: 500;
+      font-size: 13px;
+      cursor: default;
+      transition: 0.15s;
+    }
+
+    .add-model:hover {
+      border-color: #3d6b9c;
+      background: #101a24;
+    }
+
+    /* ========== CENTER TRAINING PANEL ========== */
+    .training-panel {
+      gap: 20px;
+    }
+
+    .progress-block {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 500;
+      color: #b6c8e3;
+    }
+
+    .progress-labels span:last-child {
+      font-weight: 700;
+      color: #84c9ff;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 9px;
+      background: #1a232f;
+      border-radius: 100px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px #00000060;
+    }
+
+    .progress-fill {
+      width: 78%;
+      height: 100%;
+      background: linear-gradient(90deg, #2f7cff, #8ab2ff);
+      border-radius: 100px;
+      box-shadow: 0 0 12px #2f7cff;
+      animation: shimmer 2.4s infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.85; }
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .metric {
+      background: #0b1017;
+      border-radius: 18px;
+      padding: 14px 12px;
+      border: 1px solid #202b39;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #758aa8;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .metric-value {
+      font-size: 24px;
+      font-weight: 700;
+      margin-top: 4px;
+      color: #fff;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+
+    .metric-unit {
+      font-size: 11px;
+      font-weight: 400;
+      color: #8b9fc0;
+      margin-left: 2px;
+    }
+
+    .console {
+      background: #070b10;
+      border-radius: 18px;
+      padding: 14px 16px;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      border: 1px solid #1f2a37;
+      height: 150px;
+      overflow-y: auto;
+      font-size: 12px;
+      line-height: 1.8;
+      color: #b4d0e6;
+      scrollbar-width: thin;
+      scrollbar-color: #2f4e6e #0a0f15;
+    }
+
+    .console::-webkit-scrollbar {
+      width: 4px;
+    }
+    .console::-webkit-scrollbar-track {
+      background: #0a0f15;
+    }
+    .console::-webkit-scrollbar-thumb {
+      background: #2c405a;
+      border-radius: 10px;
+    }
+
+    .log-row {
+      display: flex;
+      gap: 12px;
+      white-space: nowrap;
+    }
+
+    .log-time {
+      color: #4e6b8b;
+      min-width: 68px;
+      font-size: 11px;
+    }
+
+    .log-msg {
+      color: #c5ddf5;
+      font-size: 12px;
+    }
+
+    .log-msg i {
+      font-size: 9px;
+      margin-right: 6px;
+      color: #57d9a3;
+    }
+
+    .log-msg.warn i {
+      color: #f9c74f;
+    }
+
+    .log-msg.info i {
+      color: #4f9eff;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 2px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 13px 0;
+      border-radius: 16px;
+      border: none;
+      font-weight: 600;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: 0.12s;
+      letter-spacing: 0.2px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-primary {
+      background: linear-gradient(145deg, #1f5eff, #0f3cc9);
+      color: white;
+      box-shadow: 0 10px 18px -8px #0044ff90;
+      border: 1px solid #3f7aff;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(145deg, #2b6aff, #1a4be0);
+    }
+
+    .btn-secondary {
+      background: #18202d;
+      color: #b6c8e3;
+      border: 1px solid #2b3d55;
+    }
+
+    .btn-secondary:hover {
+      background: #1f2b3c;
+      border-color: #3d5678;
+    }
+
+    .btn-secondary i {
+      color: #5f8fd9;
+    }
+
+    /* ========== RIGHT PANEL ========== */
+    .resource-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .resource {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .resource-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 500;
+      color: #a6bbd6;
+    }
+
+    .resource-head span:last-child {
+      font-weight: 600;
+      color: #c8dcff;
+    }
+
+    .resource-bar {
+      height: 7px;
+      background: #1d2632;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .resource-fill {
+      height: 100%;
+      border-radius: 20px;
+    }
+
+    .fill-gpu {
+      width: 88%;
+      background: linear-gradient(90deg, #9d4edd, #c77dff);
+      box-shadow: 0 0 8px #9d4edd60;
+    }
+
+    .fill-cpu {
+      width: 43%;
+      background: linear-gradient(90deg, #3d9eff, #7fbdff);
+    }
+
+    .fill-ram {
+      width: 63%;
+      background: linear-gradient(90deg, #2ec4b6, #6be0d0);
+    }
+
+    .inference-box {
+      background: #0b1017;
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid #232f3e;
+      margin-top: 4px;
+    }
+
+    .inference-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .inference-head span {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #7e9ac2;
+      letter-spacing: 0.5px;
+    }
+
+    .inference-head i {
+      color: #4f9eff;
+      font-size: 15px;
+    }
+
+    .inference-field {
+      display: flex;
+      background: #10161f;
+      border-radius: 14px;
+      border: 1px solid #29394d;
+      padding: 6px 6px 6px 14px;
+      align-items: center;
+      justify-content: space-between;
+      transition: border-color 0.2s;
+    }
+
+    .inference-field:focus-within {
+      border-color: #3d7eff;
+    }
+
+    .inference-field input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #d6e5ff;
+      font-size: 13px;
+      width: 75%;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .inference-field input::placeholder {
+      color: #4d637d;
+    }
+
+    .inference-field button {
+      background: #1e2e44;
+      border: none;
+      border-radius: 10px;
+      width: 34px;
+      height: 34px;
+      color: #88b9ff;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .inference-field button:hover {
+      background: #2a3f5a;
+      color: #a8ccff;
+    }
+
+    .inference-result {
+      margin-top: 14px;
+      background: #0c121b;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 12.5px;
+      border-left: 3px solid #3f8eff;
+      color: #c4daff;
+      line-height: 1.55;
+    }
+
+    .inference-result i {
+      color: #4f9eff;
+      margin-right: 6px;
+    }
+
+    .small-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #7e9ac2;
+      margin-top: 6px;
+      padding: 0 2px;
+    }
+
+    .small-meta i {
+      margin-right: 4px;
+    }
+
+    .green-dot {
+      color: #59d9a3;
+    }
+
+    /* ========== FOOTER STRIP ========== */
+    .footer-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #1b2532;
+      padding-top: 20px;
+      margin-top: 4px;
+      font-size: 12px;
+      color: #6f86a5;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-left {
+      display: flex;
+      gap: 26px;
+    }
+
+    .footer-left span i {
+      margin-right: 6px;
+      color: #3d6eb0;
+    }
+
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .tag {
+      background: #1b2532;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #7e9ac2;
+      letter-spacing: 0.4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .export-btn {
+      background: none;
+      border: 1px solid #2b3d55;
+      border-radius: 100px;
+      padding: 5px 16px;
+      color: #9ab8e0;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .export-btn:hover {
+      background: #141e2a;
+      border-color: #3d5b7d;
+      color: #c8dcff;
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 1150px) {
+      .dashboard {
+        grid-template-columns: 1fr 1.5fr;
+      }
+      .right-panel {
+        grid-column: span 2;
+      }
+      .app {
+        padding: 20px 24px 30px;
+      }
+    }
+
+    @media (max-width: 800px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+      .right-panel {
+        grid-column: auto;
+      }
+      .site-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+      }
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .footer-strip {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+      }
+      .footer-left {
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .app {
+        padding: 16px;
+      }
+      .panel {
+        padding: 18px;
+        border-radius: 22px;
+      }
+      .metric-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .btn-row {
+        flex-direction: column;
+      }
+      .header-actions {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- ========== HEADER ========== -->
+    <header class="site-header">
+      <a href="#" class="brand">
+        <div class="brand-icon"><i class="fas fa-brain"></i></div>
+        <div class="brand-name">nexus<span>ai</span></div>
+      </a>
+      <div class="header-actions">
+        <div class="live-pill">
+          <i class="fas fa-circle"></i> training active · 8h 24m
+        </div>
+        <div class="user-chip">
+          <i class="fas fa-user-astronaut"></i>
+          <span>alex.chen</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ========== DASHBOARD ========== -->
+    <div class="dashboard">
+      <!-- ---------- LEFT: MODEL REGISTRY ---------- -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-cubes"></i> model registry</h3>
+          <div class="pill">6 active</div>
+        </div>
+
+        <div class="model-list">
+          <div class="model-card active">
+            <div class="model-left">
+              <div class="model-avatar"><i class="fas fa-microchip"></i></div>
+              <div class="model-text">
+                <h4>vit-base-224</h4>
+                <p>vision transformer · 86M</p>
+              </div>
+            </div>
+            <div class="model-metrics">
+              <span class="acc">94.2%</span>
+              <span class="loss">loss 0.12</span>
+            </div>
+          </div>
+
+          <div class="model-card">
+            <div class="model-left">
+              <div class="model-avatar"><i class="fas fa-language"></i></div>
+              <div class="model-text">
+                <h4>gpt-3.5-turbo</h4>
+                <p>language · 175B</p>
+              </div>
+            </div>
+            <div class="model-metrics">
+              <span class="acc">89.7%</span>
+              <span class="loss">loss 0.34</span>
+            </div>
+          </div>
+
+          <div class="model-card">
+            <div class="model-left">
+              <div class="model-avatar"><i class="fas fa-wave-square"></i></div>
+              <div class="model-text">
+                <h4>wav2vec2</h4>
+                <p>speech · 95M</p>
+              </div>
+            </div>
+            <div class="model-metrics">
+              <span class="acc">82.4%</span>
+              <span class="loss">loss 0.47</span>
+            </div>
+          </div>
+
+          <div class="model-card">
+            <div class="model-left">
+              <div class="model-avatar"><i class="fas fa-chart-line"></i></div>
+              <div class="model-text">
+                <h4>tab-transformer</h4>
+                <p>tabular · 12M</p>
+              </div>
+            </div>
+            <div class="model-metrics">
+              <span class="acc">91.5%</span>
+              <span class="loss">loss 0.22</span>
+            </div>
+          </div>
+
+          <div class="add-model">
+            <i class="fas fa-plus-circle"></i> add new model
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------- CENTER: TRAINING PANEL ---------- -->
+      <div class="panel training-panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-play-circle"></i> active training · vit-base-224</h3>
+          <div class="pill">epoch 34/50</div>
+        </div>
+
+        <div class="progress-block">
+          <div class="progress-labels">
+            <span>progress</span>
+            <span>78%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="metric-grid">
+          <div class="metric">
+            
